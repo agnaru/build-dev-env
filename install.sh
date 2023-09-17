@@ -1,0 +1,62 @@
+#!/bin/bash
+
+TIMESTAMP=$(date '+%Y-%m-%d_%H:%M:%S')
+
+REPO_PATH=$PWD
+cd $HOME
+
+# Install homebrew
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Install other packages using homebrew
+brew install --force jq git git-lfs the_silver_searcher tmux zsh fzf universal-ctags wget httpie \
+    lsd pyenv pyenv-virtualenv direnv neovim bat
+brew install --cask visual-studio-code docker
+
+# Font
+brew tap homebrew/cask-fonts
+brew install --cask font-hack-nerd-font
+
+# Update or install Oh My Zsh
+if test -d "$HOME/.oh-my-zsh"; then
+  echo ".oh-my-zsh found in the system, update existing repository..."
+  cd $HOME/.oh-my-zsh && git pull origin master && cd $HOME
+else
+  echo "Installing .oh-my-zsh..."
+  sh -c "$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
+fi
+if ! test -d "$HOME/.oh-my-zsh/plugins/zsh-syntax-highlighting"; then
+  git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $HOME/.oh-my-zsh/plugins/zsh-syntax-highlighting
+fi
+if ! test -d "$HOME/.oh-my-zsh/plugins/zsh-autosuggestions"; then
+  git clone https://github.com/zsh-users/zsh-autosuggestions $HOME/.oh-my-zsh/plugins/zsh-autosuggestions
+fi
+
+# nvim related
+mkdir -p $HOME/.tmp
+mkdir -p $HOME/.tmp/vim
+mkdir -p $HOME/.tmp/vim/backup
+mkdir -p $HOME/.tmp/vim/swap
+mkdir -p $HOME/.tmp/vim/undo
+
+mkdir -p $HOME/.config
+mkdir -p $HOME/.config/nvim
+
+# Link files
+ln -sf $REPO_PATH/init.lua $HOME/.config/nvim/init.lua
+ln -sf $REPO_PATH/lua $HOME/.config/nvim/
+if test -f "$HOME/.zshrc"; then
+    mv $HOME/.zshrc $HOME/.zshrc_old_$TIMESTAMP
+fi
+ln -sf $REPO_PATH/zshrc $HOME/.zshrc
+if test -f "$HOME/.tmux.conf"; then
+    mv $HOME/.tmux.conf $HOME/.tmux.conf_old_$TIMESTAMP
+fi
+ln -sf $REPO_PATH/tmux.conf $HOME/.tmux.conf
+
+# Install tpm
+if test -d "$HOME/.tmux/plugins/tpm"; then
+    cd $HOME/.tmux/plugins/tpm && git pull origin master && cd $HOME
+else
+    git clone https://github.com/tmux-plugins/tpm $HOME/.tmux/plugins/tpm
+fi
