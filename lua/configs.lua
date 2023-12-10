@@ -55,7 +55,13 @@ null_ls.setup({
     null_ls.builtins.diagnostics.eslint_d,
 
     -- python
-    null_ls.builtins.formatting.ruff,
+    null_ls.builtins.diagnostics.ruff.with({
+      extra_args = { "--extra-select", "I" },
+    }),
+    null_ls.builtins.formatting.ruff.with({
+      extra_args = { "--extra-select", "I" },
+    }),
+    null_ls.builtins.formatting.ruff_format,
     null_ls.builtins.diagnostics.sqlfluff.with({
       extra_args = { "--dialect", "snowflake" },
     }),

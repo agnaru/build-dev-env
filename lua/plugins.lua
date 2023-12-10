@@ -65,7 +65,7 @@ return {
   'hrsh7th/cmp-path',
   'hrsh7th/cmp-cmdline',
   'mitsuhiko/vim-jinja',
-  'jose-elias-alvarez/null-ls.nvim',
+  'nvimtools/none-ls.nvim',
 
   --Git
   'airblade/vim-gitgutter',
